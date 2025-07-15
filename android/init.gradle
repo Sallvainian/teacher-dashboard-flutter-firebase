@@ -1,0 +1,39 @@
+// Custom initialization script to set the JDK path for the Android Gradle plugin
+gradle.projectsLoaded {
+    rootProject.allprojects {
+        def jdkPath = "/usr/lib/jvm/jdk-21.0.7-oracle-x64"
+
+        // Set system property for JDK path
+        System.setProperty("android.jdk.path", jdkPath)
+
+        // Set system property for jlink executable
+        System.setProperty("android.jlink.executable", "${jdkPath}/bin/jlink")
+
+        // Override the path check
+        System.setProperty("com.android.build.gradle.overridePathCheck", "true")
+
+        // Override the JDK image transform behavior
+        System.setProperty("android.jdkImageTransform.jlinkExecutable", "${jdkPath}/bin/jlink")
+    }
+}
+
+// Hook into the dependency resolution to override the JDK image transform
+gradle.allprojects { project ->
+    project.afterEvaluate {
+        project.configurations.all { config ->
+            config.resolutionStrategy.dependencySubstitution {
+                // This is a hook point where we could substitute dependencies if needed
+            }
+        }
+
+        // Register a transform action if needed
+        if (project.plugins.hasPlugin('com.android.application') || 
+            project.plugins.hasPlugin('com.android.library') ||
+            project.plugins.hasPlugin('com.android.dynamic-feature')) {
+
+            project.dependencies.registerTransform {
+                // This is where we could register a custom transform if needed
+            }
+        }
+    }
+}
