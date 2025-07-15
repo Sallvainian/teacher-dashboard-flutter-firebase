@@ -96,8 +96,6 @@ launch_app.sh
 .mcp.json
 
 # Android build artifacts
-android/init.gradle
-android/gradle.properties
 android/build/
 
 # VS Code / Cursor
